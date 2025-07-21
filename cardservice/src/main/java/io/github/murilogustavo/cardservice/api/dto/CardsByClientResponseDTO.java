@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class CardsByClientResponseDTO {
     private String name;
     private String flag;
-    private BigDecimal limitReleased;
+    private BigDecimal releasedLimit;
 
     public static CardsByClientResponseDTO fromModel(ClientCard clientCard) {
         return new CardsByClientResponseDTO(

@@ -1,14 +1,17 @@
 package io.github.murilogustavo.creditevaluatorservice.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.murilogustavo.creditevaluatorservice.api.dto.*;
 import io.github.murilogustavo.creditevaluatorservice.infra.client.CardResourceClient;
 import io.github.murilogustavo.creditevaluatorservice.infra.client.ClientResourceClient;
+import io.github.murilogustavo.creditevaluatorservice.infra.mquue.EmissionCardPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class CreditEvaluatorService {
 
     private final ClientResourceClient clientClient;
     private final CardResourceClient cardClient;
+    private final EmissionCardPublisher emissionCardPublisher;
 
     public ClientSituationDTO checkClientSituation(String cpf) {
         ResponseEntity<ClientDTO> clientResponse = clientClient.getClient(cpf);
@@ -41,5 +45,10 @@ public class CreditEvaluatorService {
                 .toList();
 
         return new ClientEvaluationDTO(approvedCards);
+    }
+
+    public CardProtocolDTO solicitationCard(EmissionCardDTO emissionCard) throws JsonProcessingException {
+        emissionCardPublisher.solicitationCard(emissionCard);
+        return new CardProtocolDTO(UUID.randomUUID().toString());
     }
 }
